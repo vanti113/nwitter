@@ -1,5 +1,6 @@
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/firestore";
 
 const firebaseConfig = {
   /* 아래처럼 환경변수 process.env를 사용하여 키를 캡슐화할때에는 규칙이 있다.
@@ -19,3 +20,5 @@ const firebaseConfig = {
 // export default firebaseConfig;
 firebase.initializeApp(firebaseConfig);
 export const authService = firebase.auth(); //이렇게 익스포트 하는 이유는 필요한 서비스 만을 꺼내기 위함이다.
+export const fbInstance = firebase;
+export const dbService = firebase.firestore();
