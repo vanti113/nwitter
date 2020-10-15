@@ -9,11 +9,13 @@ function App() {
   //를 바꿔주어야 한다.
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userObj, setUserObj] = useState(null);
+  //위의 userObj는 모든 컴포넌트에서 활용될 가능성이 있기 때문에 항상 탑레벨에서 정의되어야 한다. 그래야 프롭스로 전달..
 
   useEffect(() => {
     //
     authService.onAuthStateChanged((user) => {
       //로그인이 되거나 유저에 관련된 상태가 바뀌면 authStateChanged가 호출이 될것이다.
+      //onAUthStateChanged 는 로그인 혹은 로그아웃이 콜백을 만들거다. 그 콜백의 결과가 user객체
       if (user) {
         setIsLoggedIn(true);
         setUserObj(user);

@@ -1,5 +1,6 @@
 import { dbService, fbInstance } from "fBase";
 import React, { useEffect, useState } from "react";
+import Nweet from "components/Nweet";
 
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
@@ -21,11 +22,15 @@ const Home = ({ userObj }) => {
   }; */
   useEffect(() => {
     // getNweets();
+    //onSnapshot은 기본적으로 디비에 무언가 일이 있을때 알림을 준다. 즉, 리스너이다.
+    //별도로 추가한 아이디는 컬렉션의 아이디이다.
+    //useEffect는 스테이트가 변했을때, 즉 렌더링이 되었을때 작동하므로, 트윗에 변화가 있다면, 밑의 onSnapshot이 그 변화를 감지할것이다.
     dbService.collection("nweets").onSnapshot((Snapshot) => {
       const nweetArray = Snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
+
       setNweets(nweetArray);
     });
   }, []);
@@ -60,9 +65,11 @@ const Home = ({ userObj }) => {
       <div>
         {nweets.map((nweet) => {
           return (
-            <div key={nweet.id}>
-              <h4>{nweet.text}</h4>
-            </div>
+            <Nweet
+              key={nweet.id}
+              nweetObj={nweet}
+              isOwner={nweet.creatorId === userObj.uid}
+            />
           );
         })}
       </div>
