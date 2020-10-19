@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid"; //유니크한 아이디를 생성할때 �
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
-  const [attachment, setAttachment] = useState();
+  const [attachment, setAttachment] = useState("");
 
   /*  const getNweets = async () => {
     const dbNweets = await dbService.collection("nweets").get();
@@ -39,19 +39,28 @@ const Home = ({ userObj }) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    const fileRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`);
-    //child를 생성해서 그 안에 패스를 설정한 다음(패스는 스토리지에 들어갈 자리이다.) 그 다음 레퍼런스를 얻어낸다.
-    const response = await fileRef.putString(attachment, "data_url");
-    //위의 과정을 통해 레퍼런스는 attachment의 데이터를 옵션으로(이 경우는 url) 지정한 스트링 폼의 형태로 스토리지에 저장되게 된다. 그 다음 그 결과를 객체로서 반환한다.
-    console.log(await response.ref.getDownloadURL());
-    //await를 쓰는 이유는 getDownloadURL()가 반환하는 객체가 프로미스라서 이다. 비동기 통신이 끝나면, url를 반환해 준다.
+    let attachmentUrl = "";
+    if (attachment !== "") {
+      const attachmentRef = storageService
+        .ref()
+        .child(`${userObj.uid}/${uuidv4()}`);
+      //child를 생성해서 그 안에 패스를 설정한 다음(패스는 스토리지에 들어갈 자리이다.) 그 다음 레퍼런스를 얻어낸다.
+      const response = await attachmentRef.putString(attachment, "data_url");
+      //위의 과정을 통해 레퍼런스는 attachment의 데이터를 옵션으로(이 경우는 url) 지정한 스트링 폼의 형태로 스토리지에 저장되게 된다. 그 다음 그 결과를 객체로서 반환한다.
+      attachmentUrl = await response.ref.getDownloadURL();
+    }
 
-    /*  await dbService.collection("nweets").add({
+    const nweetObj = {
       text: nweet,
       createAt: fbInstance.firestore.Timestamp.now(), //Date.now()??
       creatorId: userObj.uid,
-    });
-    setNweet(""); */
+      attachmentUrl,
+    };
+    //await를 쓰는 이유는 getDownloadURL()가 반환하는 객체가 프로미스라서 이다. 비동기 통신이 끝나면, url를 반환해 준다.
+
+    await dbService.collection("nweets").add(nweetObj);
+    setNweet("");
+    setAttachment("");
   };
 
   const onChange = (event) => {
