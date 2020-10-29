@@ -29,7 +29,6 @@ docs프로퍼티 안에서 map을 통해 각각의 객체에 data()함수를 적
       target: { value },
     } = event;
     setNewDisplayName(value);
-    refreshUser();
   };
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -38,11 +37,9 @@ docs프로퍼티 안에서 map을 통해 각각의 객체에 data()함수를 적
         displayName: newDisplayName,
         //photoUrl을 업로드 하는 건 숙제로
       });
+      refreshUser();
     }
   };
-  useEffect(() => {
-    getMyNweets();
-  }, []);
 
   return (
     <>
