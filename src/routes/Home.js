@@ -1,4 +1,4 @@
-import { dbService, fbInstance, storageService } from "fBase";
+import { dbService } from "fBase";
 import React, { useEffect, useState } from "react";
 import Nweet from "components/Nweet";
 import NweetFactory from "components/NweetFactory";
@@ -36,9 +36,13 @@ const Home = ({ userObj }) => {
   }, []);
 
   return (
-    <div>
+    <div className="container">
       <NweetFactory userObj={userObj} />
-      <div>
+      <div
+        style={{
+          marginTop: 30,
+        }}
+      >
         {nweets.map((nweet) => {
           return (
             <Nweet

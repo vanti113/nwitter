@@ -1,3 +1,5 @@
+import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { dbService, fbInstance, storageService } from "fBase";
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid"; //유니크한 아이디를 생성할때 매우 도움이 되는 모듈
@@ -7,6 +9,9 @@ const NweetFactory = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
 
   const onSubmit = async (e) => {
+    if (nweet === "") {
+      return;
+    }
     e.preventDefault();
     let attachmentUrl = "";
     if (attachment !== "") {
@@ -60,28 +65,49 @@ const NweetFactory = ({ userObj }) => {
     /* 이렇게 함으로서 결과값의 객체에 result가 포함되는데, 이게 어마어마하게 긴 url로 나온다. 근데 그 url을 브라우져에 붙여넣기 하면 실제로 사진을 볼수 있어!!!! 심지어는 인터넷 연결과는 상관이 없는 실행가능한 url 인거야!! 퍼킹 어썸~~~ 이걸 어떻게 활용할까? 문자열로서 데이터베이스에 저장하면 되려나? */
   };
   const onClearAttachment = () => {
-    setAttachment(null);
+    setAttachment("");
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} className="factoryForm">
+      <div className="factoryInput__container">
+        <input
+          onChange={onChange}
+          type="text"
+          placeholder="what's on your mind?"
+          maxLength={120}
+          value={nweet}
+        />
+        <input type="submit" value="&rarr;" className="factoryInput__arrow" />
+      </div>
+      <label htmlFor="attach-file" className="factoryInput__label">
+        <span>Add photos</span>
+        <FontAwesomeIcon icon={faPlus} />
+      </label>
       <input
-        onChange={onChange}
-        type="text"
-        placeholder="what's on your mind?"
-        maxLength={120}
-        value={nweet}
+        id="attach-file"
+        type="file"
+        accept="image/*"
+        onChange={onFileChange}
+        style={{ opacity: 0 }}
       />
-      <input type="file" accept="image/*" onChange={onFileChange} />
-      <input type="submit" value="Nwitter" />
       {
+        //attachment에 스테이트의 값이 존재할때만 오른쪽의 태그를 보이겠다는 코드. 이런게 중요하다.
         attachment && (
-          <div>
-            <img src={attachment} width="50px" height="50px" alt="" />
-            <button onClick={onClearAttachment}>Clear</button>
+          <div className="factoryFrom__attachment">
+            <img
+              src={attachment}
+              style={{
+                backgroundImage: attachment,
+              }}
+              alt=""
+            />
+            <div className="factoryFrom__clear" onClick={onClearAttachment}>
+              <span>Remove</span>
+              <FontAwesomeIcon icon={faTimes} />
+            </div>
           </div>
         )
-        //attachment에 스테이트의 값이 존재할때만 태그를 보이겠다는 코드. 이런게 중요하다.
       }
     </form>
   );
